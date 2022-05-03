@@ -1,6 +1,8 @@
 import { Canvas2DRenderer } from "open-utilities/rendering-web";
 import { PathStyle, ShapeStyle } from "open-utilities/ui";
 
+await new Promise(resolve=>window.addEventListener("load", resolve));
+
 const pendulumColor = Canvas2DRenderer.sampleCSSColor(getComputedStyle(document.body).color);
 const pendulumHeldColor = Canvas2DRenderer.sampleCSSColor(getComputedStyle(document.body).getPropertyValue("--accent-color"));
 
