@@ -1,0 +1,66 @@
+<h1>Double Pendulum</h1>
+<p>
+	A double pendulum is a pendulum connected to another pendulum. They are chaotic systems.
+</p>
+
+
+<code-block dedent style="white-space: pre">
+	|     &lt;= rod1
+	|
+	 \
+	  \   &lt;= rod2
+
+	Constants:
+	l1: length of rod1
+	l2: length of rod2
+	m1: mass of rod1
+	m2: mass of rod2
+	g: acceleration due to gravity
+
+	State:
+	a1: angle of rod1
+	a2: angle of rod2
+	v1: angular velocity of rod1
+	v2: angular velocity of rod2
+	(0 is down, rotate counterclockwise.)
+</code-block>
+<br />
+
+<p>
+	Update position: <br />
+	Acceleration formula is explained 
+	<a href="https://www.myphysicslab.com/pendulum/double-pendulum-en.html" target="_blank">here</a>.
+</p>
+<code-block dedent style="white-space: pre">
+	// calculate acceleration
+	const acc1 = (
+		(-g * (2 * m1 + m2) * sin(a1)) + 
+		(-m2 * g * sin(a1 - 2 * a2)) + 
+		(-2 * sin(a1 - a2) * m2) *
+		(sq(v2) * l2 + v1 * v1 * l1 * cos(a1 - a2))
+	) / (l1 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+
+	const acc2 = (2 * sin(a1 - a2)) * (
+		(sq(v1) * l1 * (m1 + m2)) + 
+		(g * (m1 + m2) * cos(a1)) + 
+		(sq(v2) * l2 * m2 * cos(a1 - a2))
+	) / (l2 * (2 * m1 + m2 - m2 * cos(2 * a1 - 2 * a2)));
+
+	// velocity += acceleration
+	this.velocity1 += acc1;
+	this.velocity2 += acc2;
+
+	// angle += velocity
+	this.angle1 += this.velocity1;
+	this.angle2 += this.velocity2;
+</code-block>
+
+<br />
+
+<br />
+<h3>See Also:</h3>
+<ul>
+	<li><a href="https://github.com/TheCymaera/double-pendulum" target="_blank">Source code on GitHub</a></li>
+	<li><a href="https://www.youtube.com/watch?v=cchJOxrStrs" target="_blank">Double Pendulum in Minecraft</a></li>
+</ul>
+
