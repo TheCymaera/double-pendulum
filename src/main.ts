@@ -13,11 +13,11 @@ const renderer = Canvas2DRenderer.fromCanvas(canvas);
 new ResizeObserver(()=>{
 	const canvasLength = 500;
 	const ratio = canvas.clientHeight / canvas.clientWidth;
-	const viewRect = canvas.clientHeight < canvas.clientWidth ?
+	const viewportRect = canvas.clientHeight < canvas.clientWidth ?
 		Rect.fromCenter(Vec2.zero, canvasLength / ratio, canvasLength) : 
 		Rect.fromCenter(Vec2.zero, canvasLength, canvasLength * ratio);
 	
-	renderer.setViewportRect(viewRect);
+	renderer.setViewportRect(viewportRect);
 
 	canvas.width = canvas.clientWidth;
 	canvas.height = canvas.clientHeight;
@@ -68,7 +68,16 @@ Timer.periodic(new Duration({ seconds: 1/30 }), ()=>{
 
 
 let mouseCoordinate = Vec2.zero;
-canvas.onmousedown = ()=>{
+const updateMouseCoordinate = (event: MouseEvent)=>{
+	const mouseClientPosition = new Vec2(event.clientX, event.clientY);
+	mouseCoordinate = Rect.mapPointOnto(renderer.clientRect(), mouseClientPosition, renderer.viewportRect());
+}
+
+canvas.onpointermove = updateMouseCoordinate;
+
+canvas.onpointerdown = (event)=>{
+	updateMouseCoordinate(event);
+
 	const point1 = dp.point1().add(origin);
 	const point2 = dp.point2().add(origin);
 
@@ -79,14 +88,10 @@ canvas.onmousedown = ()=>{
 	}
 }
 
-canvas.onmouseup = ()=>{
+canvas.onpointerup = ()=>{
 	heldBulb = undefined;
 }
 
-canvas.onmousemove = (event)=>{
-	const mouseClientPosition = new Vec2(event.clientX, event.clientY);
-	mouseCoordinate = Rect.mapPointOnto(renderer.clientRect(), mouseClientPosition, renderer.viewportRect());
-}
 
 console.log(`For debugging, see "app"`)
 Object.defineProperty(window, "app", {
