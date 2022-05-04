@@ -11,16 +11,23 @@ const canvas = document.querySelector("canvas")!;
 const renderer = Canvas2DRenderer.fromCanvas(canvas);
 
 new ResizeObserver(()=>{
-	const canvasLength = 500;
-	const ratio = canvas.clientHeight / canvas.clientWidth;
-	const viewportRect = canvas.clientHeight < canvas.clientWidth ?
-		Rect.fromCenter(Vec2.zero, canvasLength / ratio, canvasLength) : 
-		Rect.fromCenter(Vec2.zero, canvasLength, canvasLength * ratio);
+	const minCanvasLength = 1000;
+	const viewportLength = 400;
 	
-	renderer.setViewportRect(viewportRect);
+	const ratio = canvas.clientHeight / canvas.clientWidth;
+	if (ratio > 1) {
+		const canvasLength = Math.max(minCanvasLength, canvas.clientWidth);
 
-	canvas.width = canvas.clientWidth;
-	canvas.height = canvas.clientHeight;
+		renderer.setViewportRect(Rect.fromCenter(Vec2.zero, viewportLength, viewportLength * ratio));
+		canvas.width = canvasLength;
+		canvas.height = canvasLength * ratio;
+	} else {
+		const canvasLength = Math.max(minCanvasLength, canvas.clientHeight);
+
+		renderer.setViewportRect(Rect.fromCenter(Vec2.zero, viewportLength / ratio, viewportLength));
+		canvas.width = canvasLength / ratio;
+		canvas.height = canvasLength;
+	}
 
 	draw();
 }).observe(canvas);
