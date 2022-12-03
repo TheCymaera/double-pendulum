@@ -1,58 +1,50 @@
 import { Timer } from "open-utilities/async";
-import { Duration } from "open-utilities/core";
-import { Circle, Rect, Vec2, Path } from "open-utilities/geometry";
-import { Canvas2DRenderer } from "open-utilities/rendering-web";
+import { Duration } from "open-utilities/datetime";
+import { Circle, Rect, Vector2, Path, Matrix4, Vector4 } from "open-utilities/geometry";
+import { HTMLCanvas2D, ShapeStyle } from "open-utilities/ui";
 import { DoublePendulum } from "./DoublePendulum.js";
 import * as appearance from "./appearance.js";
-import "./ui.js";
-import "./ui.scss";
 
 const canvas = document.querySelector("canvas")!;
-const renderer = Canvas2DRenderer.fromCanvas(canvas);
+const renderer = HTMLCanvas2D.fromCanvas(canvas);
+const viewport = Rect.zero.clone();
 
 new ResizeObserver(()=>{
-	const minCanvasLength = 1000;
-	const viewportLength = 400;
-	
+	const minViewportLength = 400;
+
 	const ratio = canvas.clientHeight / canvas.clientWidth;
-	if (ratio > 1) {
-		const canvasLength = Math.max(minCanvasLength, canvas.clientWidth);
+	const width  = minViewportLength * (ratio > 1 ? 1 : 1 / ratio);
+	const height = minViewportLength * (ratio > 1 ? ratio : 1);
 
-		renderer.setViewportRect(Rect.fromCenter(Vec2.zero, viewportLength, viewportLength * ratio));
-		canvas.width = canvasLength;
-		canvas.height = canvasLength * ratio;
-	} else {
-		const canvasLength = Math.max(minCanvasLength, canvas.clientHeight);
-
-		renderer.setViewportRect(Rect.fromCenter(Vec2.zero, viewportLength / ratio, viewportLength));
-		canvas.width = canvasLength / ratio;
-		canvas.height = canvasLength;
-	}
+	renderer.setBitmapDimensions(new Vector2(canvas.clientWidth * devicePixelRatio, canvas.clientHeight * devicePixelRatio));
+	viewport.copy(Rect.fromCenter(Vector2.zero, width, height));
+	renderer.setTransform(Matrix4.ortho(viewport));
 
 	draw();
 }).observe(canvas);
 
-
 let heldBulb: 1|2|undefined = undefined;
-const origin = Vec2.zero;
+const origin = Vector2.zero;
 const dp = new DoublePendulum;
 dp.angle1 = -Math.PI/2;
 
 function draw() {
-	const point1 = dp.point1().add(origin);
-	const point2 = dp.point2().add(origin);
-
-	const drawBulb = (point: Vec2, held: boolean)=>{
+	const drawBulb = (point: Vector2, held: boolean)=>{
 		if (!held) {
-			renderer.drawCircle(new Circle(point, appearance.bulbRadius), appearance.bulbStyle);
+			renderer.drawCircle(new Circle(point, appearance.bulbRadius), appearance.bulbStyle());
 		} else {
-			renderer.drawCircle(new Circle(point, appearance.bulbRadius), appearance.bulbHeldStyle);
-			renderer.drawCircle(new Circle(point, appearance.bulbOutlineRadius), appearance.bulbHeldOutlineStyle);
+			renderer.drawCircle(new Circle(point, appearance.bulbRadius), appearance.bulbHeldStyle());
+			renderer.drawCircle(new Circle(point, appearance.bulbOutlineRadius), appearance.bulbHeldOutlineStyle());
 		}
 	}
 
+	const point1 = dp.point1().add(origin);
+	const point2 = dp.point2().add(origin);
+
 	renderer.clear();
-	renderer.drawPath(new Path().setOrigin(origin).lineTo(point1).lineTo(point2), appearance.pathStyle);
+	renderer.drawPath(new Path().setOrigin(origin).lineTo(point1).lineTo(point2), new ShapeStyle({
+		stroke: appearance.pathStyle()
+	}));
 	drawBulb(point1, heldBulb === 1);
 	drawBulb(point2, heldBulb === 2);
 }
@@ -74,10 +66,10 @@ Timer.periodic(new Duration({ seconds: 1/30 }), ()=>{
 });
 
 
-let mouseCoordinate = Vec2.zero;
+let mouseCoordinate = Vector2.zero.clone();
 const updateMouseCoordinate = (event: MouseEvent)=>{
-	const mouseClientPosition = new Vec2(event.clientX, event.clientY);
-	mouseCoordinate = Rect.mapPointOnto(renderer.clientRect(), mouseClientPosition, renderer.viewportRect());
+	const clientCoord = new Vector2(event.clientX, event.clientY);
+	mouseCoordinate = clientCoord.transformMatrix4(renderer.getClientInverseTransform());
 }
 
 canvas.onpointermove = updateMouseCoordinate;

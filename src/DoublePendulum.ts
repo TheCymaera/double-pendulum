@@ -1,4 +1,4 @@
-import { Vec2 } from "open-utilities/geometry";
+import { Vector2 } from "open-utilities/geometry";
 
 const sin = (x: number)=>Math.sin(x);
 const cos = (x: number)=>Math.cos(x);
@@ -55,19 +55,19 @@ export class DoublePendulum {
 	}
 
 
-	line1(): Vec2 {
-		return new Vec2(this.length1, 0).rotate(this.angle1);
+	line1(): Vector2 {
+		return new Vector2(this.length1, 0).rotate(this.angle1);
 	}
 
-	line2(): Vec2 {
-		return new Vec2(this.length2, 0).rotate(this.angle2);
+	line2(): Vector2 {
+		return new Vector2(this.length2, 0).rotate(this.angle2);
 	}
 
-	point1(): Vec2 {
+	point1(): Vector2 {
 		return this.line1();
 	}
 
-	point2(): Vec2 {
+	point2(): Vector2 {
 		return this.line1().add(this.line2());
 	}
 }
