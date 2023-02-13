@@ -1,4 +1,4 @@
-import { Vector2 } from "open-utilities/geometry";
+import { Vector2 } from "open-utilities/core/maths/mod.js";
 
 const sin = (x: number)=>Math.sin(x);
 const cos = (x: number)=>Math.cos(x);

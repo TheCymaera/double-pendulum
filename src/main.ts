@@ -1,13 +1,27 @@
-import { Timer } from "open-utilities/async";
-import { Duration } from "open-utilities/datetime";
-import { Circle, Rect, Vector2, Path, Matrix4, Vector4 } from "open-utilities/geometry";
-import { HTMLCanvas2D, ShapeStyle } from "open-utilities/ui";
+import { Timer } from "open-utilities/web/async/mod.js";
+import { Duration } from "open-utilities/core/datetime/mod.js";
+import { Circle, Rect, Vector2, Path, Matrix4, Vector4 } from "open-utilities/core/maths/mod.js";
+import { HTMLCanvas2D } from "open-utilities/web/ui/mod.js";
+import { ShapeStyle } from "open-utilities/core/ui/mod.js";
 import { DoublePendulum } from "./DoublePendulum.js";
-import * as appearance from "./appearance.js";
+import { Appearance } from "./appearance.js";
 
-const canvas = document.querySelector("canvas")!;
+import { CanvasApp } from "@heledron/ui/CanvasApp.js";
+import "./main.css";
+import infoHTML from "./info.html";
+import {} from "helion/CodeBlock.js";
+
+const canvas = document.createElement("canvas");
+const appearance = new Appearance(canvas);
 const renderer = HTMLCanvas2D.fromCanvas(canvas);
 const viewport = Rect.zero.clone();
+
+const canvasApp = new CanvasApp();
+canvasApp.addLayer(canvas);
+canvasApp.infoDialog.innerHTML = infoHTML;
+canvasApp.setGithubLink("https://github.com/TheCymaera/double-pendulum");
+canvasApp.node.classList.add("helion-fill-parent");
+document.body.append(canvasApp.node);
 
 new ResizeObserver(()=>{
 	const minViewportLength = 400;
@@ -27,6 +41,7 @@ let heldBulb: 1|2|undefined = undefined;
 const origin = Vector2.zero;
 const dp = new DoublePendulum;
 dp.angle1 = -Math.PI/2;
+
 
 function draw() {
 	const drawBulb = (point: Vector2, held: boolean)=>{

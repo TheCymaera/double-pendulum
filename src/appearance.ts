@@ -1,26 +1,29 @@
-import { HTMLCanvas2D } from "open-utilities/ui";
-import { PathStyle, ShapeStyle } from "open-utilities/ui";
+import { HTMLCanvas2D } from "open-utilities/web/ui/mod.js";
+import { PathStyle, ShapeStyle } from "open-utilities/core/ui/mod.js";
 
-const canvas = document.querySelector("canvas")!;
 
-const pendulumColor = ()=> HTMLCanvas2D.sampleCSSColor(getComputedStyle(canvas).color);
-const pendulumHeldColor = ()=> HTMLCanvas2D.sampleCSSColor(getComputedStyle(canvas).accentColor);
+export class Appearance {
+	constructor(readonly element: HTMLElement) { }
 
-export const bulbRadius = 10;
-export const bulbOutlineRadius = 13;
-export const bulbHoldRadius = 30;
+	readonly #pendulumColor = ()=> HTMLCanvas2D.sampleCSSColor(getComputedStyle(this.element).color);
+	readonly #pendulumHeldColor = ()=> HTMLCanvas2D.sampleCSSColor(getComputedStyle(this.element).accentColor);
 
-export const pathStyle = ()=>new PathStyle({ 
-	color: pendulumColor(), 
-	width: 3, 
-	cap: PathStyle.Cap.Round 
-});
+	readonly bulbRadius = 10;
+	readonly bulbOutlineRadius = 13;
+	readonly bulbHoldRadius = 30;
 
-export const bulbStyle = ()=>new ShapeStyle({ fill: pendulumColor() });
-export const bulbHeldStyle = ()=>new ShapeStyle({ fill: pendulumHeldColor() });
-export const bulbHeldOutlineStyle = ()=>new ShapeStyle({ 
-	stroke: new PathStyle({ 
-		color: pendulumHeldColor(), 
-		width: 3
-	})
-});
+	readonly pathStyle = ()=>new PathStyle({ 
+		color: this.#pendulumColor(), 
+		width: 3, 
+		cap: PathStyle.Cap.Round 
+	});
+
+	readonly bulbStyle = ()=>new ShapeStyle({ fill: this.#pendulumColor() });
+	readonly bulbHeldStyle = ()=>new ShapeStyle({ fill: this.#pendulumHeldColor() });
+	readonly bulbHeldOutlineStyle = ()=>new ShapeStyle({ 
+		stroke: new PathStyle({ 
+			color: this.#pendulumHeldColor(), 
+			width: 3
+		})
+	});
+}

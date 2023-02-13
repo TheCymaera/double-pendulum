@@ -1,20 +1,27 @@
-import sourcemaps from "rollup-plugin-sourcemaps";
 import typescript from "@rollup/plugin-typescript";
 import node from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
+import scss from 'rollup-plugin-scss';
+import { string } from "rollup-plugin-string";
+
+const dst = "./public/dst";
 
 export default [
 	{
 		input: 'src/main.ts',
 		output: {
-			sourcemap: true,
 			format: "es",
-			file: "./public/dst/main.js"
+			file: dst + "/main.js",
+			assetFileNames: '[name][extname]'
 		},
 		plugins: [
 			node(),
+			string({ include: "**/*.html" }),
 			typescript(),
-			sourcemaps(),
+			scss({
+				outputStyle: "compressed",
+				fileName: "main.css"
+			}),
 			terser(),
 		]
 	}
