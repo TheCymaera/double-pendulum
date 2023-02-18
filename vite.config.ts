@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import { createHtmlPlugin } from 'vite-plugin-html'
 
-const page_url = "https://heledron.com/misc/boids/"
+const page_url = "https://heledron.com/misc/double-pendulum/"
 
 const page_title					= "Double Pendulum";
 const page_description		= "Double Pendulum Physics Simulation.";
