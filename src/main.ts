@@ -8,7 +8,7 @@ import { Appearance } from "./appearance.js";
 
 import { CanvasApp } from "@heledron/ui/CanvasApp.js";
 import "./main.css";
-import infoHTML from "./info.html";
+import infoHTML from "./info.html?raw";
 import {} from "helion/CodeBlock.js";
 
 const canvas = document.createElement("canvas");
