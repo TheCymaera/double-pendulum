@@ -4,7 +4,7 @@
 </p>
 
 
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre">
 	|     &lt;= rod1
 	|
 	 \
@@ -23,7 +23,7 @@
 	v1: angular velocity of rod1
 	v2: angular velocity of rod2
 	(0 is down, rotate counterclockwise.)
-</helion-code-block>
+</code>
 <br />
 
 <p>
@@ -31,7 +31,7 @@
 	Acceleration formula is explained 
 	<a href="https://www.myphysicslab.com/pendulum/double-pendulum-en.html" target="_blank">here</a>.
 </p>
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre">
 	// calculate acceleration
 	const acc1 = (
 		(-g * (2 * m1 + m2) * sin(a1)) + 
@@ -53,7 +53,7 @@
 	// angle += velocity
 	this.angle1 += this.velocity1;
 	this.angle2 += this.velocity2;
-</helion-code-block>
+</code>
 
 <br />
 

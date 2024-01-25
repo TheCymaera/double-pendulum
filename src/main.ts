@@ -1,27 +1,25 @@
 import { Timer } from "open-utilities/web/async/mod.js";
 import { Duration } from "open-utilities/core/datetime/mod.js";
-import { Circle, Rect, Vector2, Path, Matrix4, Vector4 } from "open-utilities/core/maths/mod.js";
+import { Circle, Rect, Vector2, Path, Matrix4 } from "open-utilities/core/maths/mod.js";
 import { HTMLCanvas2D } from "open-utilities/web/ui/mod.js";
 import { ShapeStyle } from "open-utilities/core/ui/mod.js";
 import { DoublePendulum } from "./DoublePendulum.js";
 import { Appearance } from "./appearance.js";
+import { render } from "solid-js/web";
 
-import { CanvasApp } from "@heledron/ui/CanvasApp.js";
-import "./main.css";
 import infoHTML from "./info.html?raw";
-import {} from "helion/CodeBlock.js";
+import { App } from "./ui/App.jsx";
 
 const canvas = document.createElement("canvas");
 const appearance = new Appearance(canvas);
 const renderer = HTMLCanvas2D.fromCanvas(canvas);
 const viewport = Rect.zero.clone();
 
-const canvasApp = new CanvasApp();
-canvasApp.addLayer(canvas);
-canvasApp.infoDialog.innerHTML = infoHTML;
-canvasApp.setGithubLink("https://github.com/TheCymaera/double-pendulum");
-canvasApp.node.classList.add("helion-fill-parent");
-document.body.append(canvasApp.node);
+render(()=>App({
+	layers: [canvas],
+	info: infoHTML,
+	githubLink: "https://github.com/TheCymaera/double-pendulum",
+}), document.body);
 
 new ResizeObserver(()=>{
 	const minViewportLength = 400;
